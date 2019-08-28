@@ -34,33 +34,14 @@ int gerarNumAleatorio(){
     return ((rand() % 1000) + 1);
 }
 
-arv *buscar(arv **raiz, int ch, arv **pai){
-    arv atual = raiz;
-	pai = NULL;
-	while(atual){
-		if(atual->chave == ch )
-			return atual;
-		*pai = atual;
-		if( ch < atual->chave)
-			atual = atual->esq;
-		else
-			atual = atual->dir;
-	}
-	return NULL;
+arv *busca (arv **r, int k) {
+    if (*r == NULL || (*r)->info == k)
+       return *r;
+    if ((*r)->info > k)
+       return busca(&(*r)->esq, k);
+    else
+       return busca(&(*r)->dir, k);
 }
-
-// int profundidade(int menor, int maior){
-//     if( raiz == NULL){
-//         return 0;
-//         // raiz = no;
-//     }else{
-//         if( (*raiz)->info < (*no)->info ){
-//             inserir((*raiz)->esq, no);
-//         }else{
-//             inserir((*raiz)->dir, no);
-//         }
-//     }
-// }
 
 int main(){
     arv *raiz, *aux;
