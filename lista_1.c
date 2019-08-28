@@ -42,6 +42,9 @@ int numeroNos(arv **raiz){
 int profundidade_maior(arv **raiz,arv **maior){
     int numeroNoDir = numeroNos(&(*raiz)->dir);
     int numeroNoEsq = numeroNos(&(*raiz)->esq);
+    if((*raiz)->dir == NULL && (*raiz)->esq == NULL){
+        return (*raiz)->info;
+    }
     if(numeroNoDir > numeroNoEsq){
         (*maior) =  (*raiz)->dir;
         profundidade((*raiz)->dir, &(*maior));
@@ -54,6 +57,9 @@ int profundidade_maior(arv **raiz,arv **maior){
 int profundidade_menor(arv **raiz,arv **maior){
     int numeroNoDir = numeroNos(&(*raiz)->dir);
     int numeroNoEsq = numeroNos(&(*raiz)->esq);
+    if((*raiz)->dir == NULL && (*raiz)->esq == NULL){
+        return (*raiz)->info;
+    }
     if(numeroNoDir < numeroNoEsq){
         (*maior) =  (*raiz)->dir;
         profundidade_menor((*raiz)->dir, &(*maior));
