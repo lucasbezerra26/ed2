@@ -11,9 +11,9 @@ typedef struct arv arv;
 
 void inserir(arv **raiz, int valor){
     if( *raiz == NULL){
-        arv *no = (arv*)malloc(sizeof(arv));
-        no->info = valor;
-        no->esq = no->dir = NULL;
+        *raiz = (arv*)malloc(sizeof(arv));
+        (*raiz)->info = valor;
+        (*raiz)->esq = (*raiz)->dir = NULL;
     }else{
         if( valor < (*raiz)->info ){
             inserir(&(*raiz)->esq, valor);
@@ -21,6 +21,15 @@ void inserir(arv **raiz, int valor){
             inserir(&(*raiz)->dir, valor);
         }
     }
+}
+
+arv *alocaNo(int info){
+    arv *aux;
+    aux =(arv*) malloc(sizeof(arv));
+    aux->info = info;
+    aux->dir = NULL;
+    aux->esq = NULL;
+    return aux;
 }
 
 int gerarNumAleatorio(){
@@ -82,8 +91,8 @@ void imprimir(arv **raiz){
 }
 
 int main(){
-    arv *raiz;
-    raiz = (arv*) malloc(sizeof(arv));
+    arv *raiz, *aux;
+    raiz = NULL;
 
     clock_t inicio = clock();
 
