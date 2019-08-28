@@ -5,7 +5,7 @@
 struct arv{
     int info;
     struct arv *dir,*esq;
-};
+}; 
 
 typedef struct arv arv;
 
@@ -35,32 +35,36 @@ int gerarNumAleatorio(){
 }
 
 arv *buscar(arv **raiz, int ch, arv **pai){
-    arv atual = raiz;
+    arv atual = *raiz;
 	pai = NULL;
-	while(atual){
-		if(atual->chave == ch )
-			return atual;
-		*pai = atual;
-		if( ch < atual->chave)
-			atual = atual->esq;
+	while(raiz){
+		if(r->chave == ch )
+			return r;
+		*pai = r;
+		if( ch < r->chave)
+			r = r->esq;
 		else
-			atual = atual->dir;
+			r = r->dir;
 	}
 	return NULL;
 }
 
-// int profundidade(int menor, int maior){
-//     if( raiz == NULL){
-//         return 0;
-//         // raiz = no;
-//     }else{
-//         if( (*raiz)->info < (*no)->info ){
-//             inserir((*raiz)->esq, no);
-//         }else{
-//             inserir((*raiz)->dir, no);
-//         }
-//     }
-// }
+int numeroNos(arv **raiz){
+	if(*raiz == NULL) return 0;
+	return numeroNos(&(*raiz)->esq)+1+numeroNos(&(*raiz)->dir);
+}
+
+int profundidade(arv **raiz,arv **maior, int distancia){
+    int numeroNoDir = numeroNos(&(*raiz)->dir);
+    int numeroNoEsq = numeroNos(&(*raiz)->esq);
+    if(numeroNoDir > numeroNoEsq){
+        (*maior) =  (*raiz)->dir;
+        profundidade((*raiz)->dir, &(*maior), distancia);
+    }else{
+        (*maior) =  (*raiz)->esq;
+        profundidade((*raiz)->esq, &(*maior), distancia);
+    }
+}
 
 int main(){
     arv *raiz, *aux;
