@@ -42,31 +42,31 @@ int numeroNos(arv **raiz){
 int profundidade_maior(arv **raiz,arv **maior){
     int numeroNoDir = numeroNos(&(*raiz)->dir);
     int numeroNoEsq = numeroNos(&(*raiz)->esq);
-    if((*raiz)->dir == NULL && (*raiz)->esq == NULL){
-        return (*raiz)->info;
+    if(!((*raiz)->dir == NULL && (*raiz)->esq == NULL)){
+        if(numeroNoDir > numeroNoEsq){
+            (*maior) =  (*raiz)->dir;
+            profundidade_maior(&(*raiz)->dir, &(*maior));
+        }else{
+            (*maior) =  (*raiz)->esq;
+            profundidade_maior(&(*raiz)->esq, &(*maior));
+        }
     }
-    if(numeroNoDir > numeroNoEsq){
-        (*maior) =  (*raiz)->dir;
-        profundidade((*raiz)->dir, &(*maior));
-    }else{
-        (*maior) =  (*raiz)->esq;
-        profundidade((*raiz)->esq, &(*maior));
-    }
+    return (*raiz)->info;
 }
 
 int profundidade_menor(arv **raiz,arv **maior){
     int numeroNoDir = numeroNos(&(*raiz)->dir);
     int numeroNoEsq = numeroNos(&(*raiz)->esq);
-    if((*raiz)->dir == NULL && (*raiz)->esq == NULL){
-        return (*raiz)->info;
+    if(!((*raiz)->dir == NULL && (*raiz)->esq == NULL)){
+        if(numeroNoDir < numeroNoEsq){
+            (*maior) =  (*raiz)->dir;
+            profundidade_menor(&(*raiz)->dir, &(*maior));
+        }else{
+            (*maior) =  (*raiz)->esq;
+            profundidade_menor(&(*raiz)->esq, &(*maior));
+        }
     }
-    if(numeroNoDir < numeroNoEsq){
-        (*maior) =  (*raiz)->dir;
-        profundidade_menor((*raiz)->dir, &(*maior));
-    }else{
-        (*maior) =  (*raiz)->esq;
-        profundidade_menor((*raiz)->esq, &(*maior));
-    }
+    return (*raiz)->info;
 }
 
 arv *busca (arv **r, int k) {
@@ -78,20 +78,33 @@ arv *busca (arv **r, int k) {
        return busca(&(*r)->dir, k);
 }
 
+void imprimir(arv **raiz){
+    if(*raiz){
+        printf("(");
+        printf("%d ", (*raiz)->info);
+        imprimir(&(*raiz)->esq);
+        imprimir(&(*raiz)->dir);
+        printf(")");
+    }
+}
+
 int main(){
     arv *raiz, *aux;
     raiz = (arv*) malloc(sizeof(arv));
 
     clock_t inicio = clock();
 
-    for(int i = 0; i < 1000; i++){
+    for(int i = 0; i < 5; i++){
         int num = gerarNumAleatorio();
         aux = alocaNo(num);
         inserir(&raiz, &aux);
-    }   
+    }
     clock_t fim = clock();
     float segundos = (float)(fim - inicio) / CLOCKS_PER_SEC;
     printf("Inserido 1000 elementos em %.4f segundos.\n", segundos);
+
+    imprimir(&raiz);
+    printf("\n");
 
     return 0;
 }
