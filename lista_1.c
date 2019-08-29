@@ -9,14 +9,23 @@ struct arv{
 
 typedef struct arv arv;
 
-void inserir(arv **raiz, arv **no){
+arv *busca (arv **r, int k);
+
+void inserir(arv **raiz, int valor){
     if( *raiz == NULL){
-        raiz = no;
+        *raiz = (arv*)malloc(sizeof(arv));
+        (*raiz)->info = valor;
+        (*raiz)->esq = (*raiz)->dir = NULL;
+        clock_t inicio = clock();
+        busca(&raiz, 30);
+        clock_t fim = clock();
+        float segundos = (float)(fim - inicio) / CLOCKS_PER_SEC;
+        printf("Busca do elemento 30. Demorou em %.4f segundos.\n", segundos);
     }else{
-        if( (*raiz)->info < (*no)->info ){
-            inserir(&(*raiz)->esq, no);
+        if( valor < (*raiz)->info ){
+            inserir(&(*raiz)->esq, valor);
         }else{
-            inserir(&(*raiz)->dir, no);
+            inserir(&(*raiz)->dir, valor);
         }
     }
 }
@@ -39,16 +48,35 @@ int numeroNos(arv **raiz){
 	return numeroNos(&(*raiz)->esq)+1+numeroNos(&(*raiz)->dir);
 }
 
-void profundidade(arv **raiz,arv **maior){
+
+int profundidade_maior(arv **raiz,arv **maior){
     int numeroNoDir = numeroNos(&(*raiz)->dir);
     int numeroNoEsq = numeroNos(&(*raiz)->esq);
-    if(numeroNoDir > numeroNoEsq){
-        (*maior) =  (*raiz)->dir;
-        profundidade(&(*raiz)->dir, &(*maior));
-    }else{
-        (*maior) =  (*raiz)->esq;
-        profundidade(&(*raiz)->esq, &(*maior));
+    if(!((*raiz)->dir == NULL && (*raiz)->esq == NULL)){
+        if(numeroNoDir > numeroNoEsq){
+            (*maior) =  (*raiz)->dir;
+            profundidade_maior(&(*raiz)->dir, &(*maior));
+        }else{
+            (*maior) =  (*raiz)->esq;
+            profundidade_maior(&(*raiz)->esq, &(*maior));
+        }
     }
+    return (*raiz)->info;
+}
+
+int profundidade_menor(arv **raiz,arv **maior){
+    int numeroNoDir = numeroNos(&(*raiz)->dir);
+    int numeroNoEsq = numeroNos(&(*raiz)->esq);
+    if(!((*raiz)->dir == NULL && (*raiz)->esq == NULL)){
+        if(numeroNoDir < numeroNoEsq){
+            (*maior) =  (*raiz)->dir;
+            profundidade_menor(&(*raiz)->dir, &(*maior));
+        }else{
+            (*maior) =  (*raiz)->esq;
+            profundidade_menor(&(*raiz)->esq, &(*maior));
+        }
+    }
+    return (*raiz)->info;
 }
 
 arv *busca (arv **r, int k) {
@@ -60,22 +88,33 @@ arv *busca (arv **r, int k) {
        return busca(&(*r)->dir, k);
 }
 
+void imprimir(arv **raiz){
+    if(*raiz){
+        printf("(");
+        printf("%d ", (*raiz)->info);
+        imprimir(&(*raiz)->esq);
+        imprimir(&(*raiz)->dir);
+        printf(")");
+    }
+}
+
 int main(){
     arv *raiz, *aux;
     arv *maior;
-    raiz = (arv*) malloc(sizeof(arv));
+    raiz = NULL;
+
 
     clock_t inicio = clock();
 
-    for(int i = 0; i < 1000; i++){
+    for(int i = 0; i < 5; i++){
         int num = gerarNumAleatorio();
-        aux = alocaNo(num);
-        inserir(&raiz, &aux);
-    }   
+        inserir(&raiz, num);
+    }
     clock_t fim = clock();
     float segundos = (float)(fim - inicio) / CLOCKS_PER_SEC;
     printf("Inserido 1000 elementos em %.4f segundos.\n", segundos);
     profundidade(&raiz,&maior);
-    printf
+    imprimir(&raiz);
+    printf("\n");
     return 0;
 }
