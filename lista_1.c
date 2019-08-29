@@ -48,6 +48,7 @@ int numeroNos(arv **raiz){
 	return numeroNos(&(*raiz)->esq)+1+numeroNos(&(*raiz)->dir);
 }
 
+
 int profundidade_maior(arv **raiz,arv **maior){
     int numeroNoDir = numeroNos(&(*raiz)->dir);
     int numeroNoEsq = numeroNos(&(*raiz)->esq);
@@ -99,7 +100,9 @@ void imprimir(arv **raiz){
 
 int main(){
     arv *raiz, *aux;
+    arv *maior;
     raiz = NULL;
+
 
     clock_t inicio = clock();
 
@@ -110,9 +113,8 @@ int main(){
     clock_t fim = clock();
     float segundos = (float)(fim - inicio) / CLOCKS_PER_SEC;
     printf("Inserido 1000 elementos em %.4f segundos.\n", segundos);
-
+    profundidade(&raiz,&maior);
     imprimir(&raiz);
     printf("\n");
-
     return 0;
 }
