@@ -9,11 +9,18 @@ struct arv{
 
 typedef struct arv arv;
 
+arv *busca (arv **r, int k);
+
 void inserir(arv **raiz, int valor){
     if( *raiz == NULL){
         *raiz = (arv*)malloc(sizeof(arv));
         (*raiz)->info = valor;
         (*raiz)->esq = (*raiz)->dir = NULL;
+        clock_t inicio = clock();
+        busca(&raiz, 30);
+        clock_t fim = clock();
+        float segundos = (float)(fim - inicio) / CLOCKS_PER_SEC;
+        printf("Busca do elemento 30. Demorou em %.4f segundos.\n", segundos);
     }else{
         if( valor < (*raiz)->info ){
             inserir(&(*raiz)->esq, valor);
