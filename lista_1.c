@@ -43,37 +43,39 @@ int numeroNos(arv *raiz){
 	return numeroNos(raiz->esq)+1+numeroNos(raiz->dir);
 }
 
-void profundidade_maior(arv **raiz,arv **maior){
+void profundidade_maior(arv **raiz,arv **maior, int *nivel){
     int numeroNoDir = numeroNos((*raiz)->dir);
     int numeroNoEsq = numeroNos((*raiz)->esq);
     if(!((*raiz)->dir == NULL && (*raiz)->esq == NULL)){
+        (*nivel)++;
         if(numeroNoDir > numeroNoEsq){
             (*maior) =  (*raiz)->dir;
-            profundidade_maior(&(*raiz)->dir, &(*maior));
+            profundidade_maior(&(*raiz)->dir, &(*maior), nivel);
         }else{
             (*maior) =  (*raiz)->esq;
-            profundidade_maior(&(*raiz)->esq, &(*maior));
+            profundidade_maior(&(*raiz)->esq, &(*maior), nivel);
         }
     }
 }
 
-void profundidade_menor(arv **raiz,arv **menor){
+void profundidade_menor(arv **raiz,arv **menor, int *nivel){
     int numeroNoDir = numeroNos((*raiz)->dir);
     int numeroNoEsq = numeroNos((*raiz)->esq);
     if( ((*raiz)->dir != NULL) && ((*raiz)->esq != NULL) ){
+        (*nivel)++;
         if(numeroNoDir < numeroNoEsq){
             (*menor) =  (*raiz)->dir;
-            profundidade_menor(&(*raiz)->dir, &(*menor));
+            profundidade_menor(&(*raiz)->dir, &(*menor), nivel);
         }else{
             (*menor) =  (*raiz)->esq;
-            profundidade_menor(&(*raiz)->esq, &(*menor));
+            profundidade_menor(&(*raiz)->esq, &(*menor), nivel);
         }
     }else{
         if ((*raiz)->dir == NULL && (*raiz)->esq != NULL){
-            profundidade_menor(&(*raiz)->esq, &(*menor));
+            profundidade_menor(&(*raiz)->esq, &(*menor), nivel);
         }else{
             if( (*raiz)->dir != NULL && (*raiz)->esq == NULL ){
-                profundidade_menor(&(*raiz)->dir, &(*menor));
+                profundidade_menor(&(*raiz)->dir, &(*menor), nivel);
             }else{
                 (*menor) = (*raiz);
             }
@@ -125,10 +127,12 @@ void imprimir(arv **raiz){
 int main(){
     arv *raiz, *aux;
     arv *maior;
+    int nivel_menor = 0, nivel_maior;
     srand(time(NULL));
 
     for (int i = 0; i < 30; i++){
-
+        nivel_menor = 0;
+        nivel_maior =  0;
 
         printf("+----------------------------+\n");
         printf("======= %d INTERAÇÃO =========\n", i+1);
@@ -148,11 +152,11 @@ int main(){
         imprimir(&raiz);
         printf("\n");
 
-        profundidade_maior(&raiz, &maior);
-        printf("Maior: %d \n", maior->info);
+        profundidade_maior(&raiz, &maior, &nivel_maior);
+        printf("Maior Nível: %d\n", nivel_maior);
 
-        profundidade_menor(&raiz, &aux);
-        printf("Menor: %d \n", aux->info);
+        profundidade_menor(&raiz, &aux, &nivel_menor);
+        printf("Menor Nível: %d\n", nivel_menor);
         // printf("Num: %d \n", num);
 
         inicio = clock();
