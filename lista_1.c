@@ -17,7 +17,7 @@ void inserir(arv **raiz, int valor){
         (*raiz)->info = valor;
         (*raiz)->esq = (*raiz)->dir = NULL;
         clock_t inicio = clock();
-        busca(&raiz, 30);
+        busca(&(*raiz), 30);
         clock_t fim = clock();
         float segundos = (float)(fim - inicio) / CLOCKS_PER_SEC;
         printf("Busca do elemento 30. Demorou em %.4f segundos.\n", segundos);
@@ -43,15 +43,14 @@ int gerarNumAleatorio(){
     return ((rand() % 1000) + 1);
 }
 
-int numeroNos(arv **raiz){
-	if(*raiz == NULL) return 0;
-	return numeroNos(&(*raiz)->esq)+1+numeroNos(&(*raiz)->dir);
+int numeroNos(arv *raiz){
+	if(raiz == NULL ) return 0;
+	return numeroNos(raiz->esq)+1+numeroNos(raiz->dir);
 }
 
-
-int profundidade_maior(arv **raiz,arv **maior){
-    int numeroNoDir = numeroNos(&(*raiz)->dir);
-    int numeroNoEsq = numeroNos(&(*raiz)->esq);
+void profundidade_maior(arv **raiz,arv **maior){
+    int numeroNoDir = numeroNos((*raiz)->dir);
+    int numeroNoEsq = numeroNos((*raiz)->esq);
     if(!((*raiz)->dir == NULL && (*raiz)->esq == NULL)){
         if(numeroNoDir > numeroNoEsq){
             (*maior) =  (*raiz)->dir;
@@ -61,23 +60,50 @@ int profundidade_maior(arv **raiz,arv **maior){
             profundidade_maior(&(*raiz)->esq, &(*maior));
         }
     }
-    return (*raiz)->info;
 }
 
-int profundidade_menor(arv **raiz,arv **maior){
-    int numeroNoDir = numeroNos(&(*raiz)->dir);
-    int numeroNoEsq = numeroNos(&(*raiz)->esq);
-    if(!((*raiz)->dir == NULL && (*raiz)->esq == NULL)){
+void profundidade_menor(arv **raiz,arv **menor){
+    int numeroNoDir = numeroNos((*raiz)->dir);
+    int numeroNoEsq = numeroNos((*raiz)->esq);
+    if( ((*raiz)->dir != NULL) && ((*raiz)->esq != NULL) ){
         if(numeroNoDir < numeroNoEsq){
-            (*maior) =  (*raiz)->dir;
-            profundidade_menor(&(*raiz)->dir, &(*maior));
+            (*menor) =  (*raiz)->dir;
+            profundidade_menor(&(*raiz)->dir, &(*menor));
         }else{
-            (*maior) =  (*raiz)->esq;
-            profundidade_menor(&(*raiz)->esq, &(*maior));
+            (*menor) =  (*raiz)->esq;
+            profundidade_menor(&(*raiz)->esq, &(*menor));
+        }
+    }else{
+        if ((*raiz)->dir == NULL && (*raiz)->esq != NULL){
+            profundidade_menor(&(*raiz)->esq, &(*menor));
+        }else{
+            if( (*raiz)->dir != NULL && (*raiz)->esq == NULL ){
+                profundidade_menor(&(*raiz)->dir, &(*menor));
+            }else{
+                (*menor) = (*raiz);
+            }
         }
     }
-    return (*raiz)->info;
 }
+
+// void profundidade_menor(arv **raiz,arv **menor){
+//     if(*raiz){
+//         if((*raiz)->esq != NULL && (*raiz)->dir != NULL ){
+//             int numeroNoDir = numeroNos((*raiz)->dir);
+//             int numeroNoEsq = numeroNos((*raiz)->esq);
+//             printf("Entrou");
+//             if (numeroNoDir < numeroNoEsq){
+//                 profundidade_menor(&(*raiz)->dir, &(*menor));
+//             }else{
+//                 profundidade_menor(&(*raiz)->esq, &(*menor));
+//             }
+//         }else{
+//             // if(  )
+//             printf("\nPrint: %d\n",(*raiz)->info);
+//             *menor = (*raiz);
+//         }
+//     }
+// }
 
 arv *busca (arv **r, int k) {
     if (*r == NULL || (*r)->info == k)
@@ -95,13 +121,17 @@ void imprimir(arv **raiz){
         imprimir(&(*raiz)->esq);
         imprimir(&(*raiz)->dir);
         printf(")");
+    }else{
+        printf("()");
     }
+    
 }
 
 int main(){
     arv *raiz, *aux;
     arv *maior;
     raiz = NULL;
+    // maior = NULL;
 
 
     clock_t inicio = clock();
@@ -113,8 +143,13 @@ int main(){
     clock_t fim = clock();
     float segundos = (float)(fim - inicio) / CLOCKS_PER_SEC;
     printf("Inserido 1000 elementos em %.4f segundos.\n", segundos);
-    profundidade(&raiz,&maior);
     imprimir(&raiz);
-    printf("\n");
+
+    profundidade_maior(&raiz, &maior);
+    printf("Maior: %d \n", maior->info);
+
+    profundidade_menor(&raiz, &aux);
+    printf("menor: %d \n", aux->info);
+    // printf("Num: %d \n", num);
     return 0;
 }
