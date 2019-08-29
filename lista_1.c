@@ -16,11 +16,6 @@ void inserir(arv **raiz, int valor){
         *raiz = (arv*)malloc(sizeof(arv));
         (*raiz)->info = valor;
         (*raiz)->esq = (*raiz)->dir = NULL;
-        clock_t inicio = clock();
-        busca(&(*raiz), 30);
-        clock_t fim = clock();
-        float segundos = (float)(fim - inicio) / CLOCKS_PER_SEC;
-        printf("Busca do elemento 30. Demorou em %.4f segundos.\n", segundos);
     }else{
         if( valor < (*raiz)->info ){
             inserir(&(*raiz)->esq, valor);
@@ -130,26 +125,42 @@ void imprimir(arv **raiz){
 int main(){
     arv *raiz, *aux;
     arv *maior;
-    raiz = NULL;
-    // maior = NULL;
+    srand(time(NULL));
+
+    for (int i = 0; i < 30; i++){
 
 
-    clock_t inicio = clock();
+        printf("+----------------------------+\n");
+        printf("======= %d INTERAÇÃO =========\n", i+1);
+        printf("+----------------------------+\n");
+        
+        raiz = NULL;
+        // maior = NULL;
+        clock_t inicio = clock();
 
-    for(int i = 0; i < 5; i++){
-        int num = gerarNumAleatorio();
-        inserir(&raiz, num);
+        for(int i = 0; i < 5; i++){
+            int num = gerarNumAleatorio();
+            inserir(&raiz, num);
+        }
+        clock_t fim = clock();
+        float segundos = (float)(fim - inicio) / CLOCKS_PER_SEC;
+        printf("Inserido 1000 elementos em %.4f segundos.\n", segundos);
+        imprimir(&raiz);
+        printf("\n");
+
+        profundidade_maior(&raiz, &maior);
+        printf("Maior: %d \n", maior->info);
+
+        profundidade_menor(&raiz, &aux);
+        printf("Menor: %d \n", aux->info);
+        // printf("Num: %d \n", num);
+
+        inicio = clock();
+        busca(&raiz, 30);
+        fim = clock();
+        segundos = (float)(fim - inicio) / CLOCKS_PER_SEC;
+        printf("Busca do elemento 30. Demorou em %.4f segundos.\n", segundos);
+
     }
-    clock_t fim = clock();
-    float segundos = (float)(fim - inicio) / CLOCKS_PER_SEC;
-    printf("Inserido 1000 elementos em %.4f segundos.\n", segundos);
-    imprimir(&raiz);
-
-    profundidade_maior(&raiz, &maior);
-    printf("Maior: %d \n", maior->info);
-
-    profundidade_menor(&raiz, &aux);
-    printf("menor: %d \n", aux->info);
-    // printf("Num: %d \n", num);
     return 0;
 }
