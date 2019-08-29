@@ -110,7 +110,8 @@ int main(){
     arv *maior;
     int nivel_menor = 0, nivel_maior;
     srand(time(NULL));
-
+    int *vetor;
+    vetor = (int*) calloc(sizeof(int),1000);
     for (int i = 0; i < 30; i++){
         nivel_menor = 0;
         nivel_maior =  0;
@@ -145,7 +146,13 @@ int main(){
         fim = clock();
         segundos = (float)(fim - inicio) / CLOCKS_PER_SEC;
         printf("Busca do elemento 30. Demorou em %.4f segundos.\n", segundos);
-
+        int difrenca = nivel_maior-nivel_menor;
+        vetor[difrenca]++;
+    }
+    for(int i=0; i<1000; i++){
+        if( vetor[i] != 0 ){
+            printf("A quantidade de vezes que a diferenca foi %d é %d\n",i,vetor[i]);
+        }
     }
     return 0;
 }
