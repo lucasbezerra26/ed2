@@ -39,15 +39,15 @@ int numeroNos(arv **raiz){
 	return numeroNos(&(*raiz)->esq)+1+numeroNos(&(*raiz)->dir);
 }
 
-int profundidade(arv **raiz,arv **maior, int distancia){
+void profundidade(arv **raiz,arv **maior){
     int numeroNoDir = numeroNos(&(*raiz)->dir);
     int numeroNoEsq = numeroNos(&(*raiz)->esq);
     if(numeroNoDir > numeroNoEsq){
         (*maior) =  (*raiz)->dir;
-        profundidade((*raiz)->dir, &(*maior), distancia);
+        profundidade(&(*raiz)->dir, &(*maior));
     }else{
         (*maior) =  (*raiz)->esq;
-        profundidade((*raiz)->esq, &(*maior), distancia);
+        profundidade(&(*raiz)->esq, &(*maior));
     }
 }
 
@@ -62,6 +62,7 @@ arv *busca (arv **r, int k) {
 
 int main(){
     arv *raiz, *aux;
+    arv *maior;
     raiz = (arv*) malloc(sizeof(arv));
 
     clock_t inicio = clock();
@@ -74,6 +75,7 @@ int main(){
     clock_t fim = clock();
     float segundos = (float)(fim - inicio) / CLOCKS_PER_SEC;
     printf("Inserido 1000 elementos em %.4f segundos.\n", segundos);
-
+    profundidade(&raiz,&maior);
+    printf
     return 0;
 }
