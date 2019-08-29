@@ -83,25 +83,6 @@ void profundidade_menor(arv **raiz,arv **menor, int *nivel){
     }
 }
 
-// void profundidade_menor(arv **raiz,arv **menor){
-//     if(*raiz){
-//         if((*raiz)->esq != NULL && (*raiz)->dir != NULL ){
-//             int numeroNoDir = numeroNos((*raiz)->dir);
-//             int numeroNoEsq = numeroNos((*raiz)->esq);
-//             printf("Entrou");
-//             if (numeroNoDir < numeroNoEsq){
-//                 profundidade_menor(&(*raiz)->dir, &(*menor));
-//             }else{
-//                 profundidade_menor(&(*raiz)->esq, &(*menor));
-//             }
-//         }else{
-//             // if(  )
-//             printf("\nPrint: %d\n",(*raiz)->info);
-//             *menor = (*raiz);
-//         }
-//     }
-// }
-
 arv *busca (arv **r, int k) {
     if (*r == NULL || (*r)->info == k)
        return *r;
