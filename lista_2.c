@@ -135,12 +135,17 @@ void inserir(arvAVL **raiz, int valor){
 	else if (valor > (*raiz)->info) 
 		inserir(&(*raiz)->dir, valor); 
 
-	(*raiz)->altura = 1 + max(altura((*raiz)->esq), altura((*raiz)->dir)); 
+	int fb = abs(fatorBalanceamento(*raiz));
+    printf("=========== %d\n", fatorBalanceamento((*raiz)->esq));
+    printf("=========== %d\n", fatorBalanceamento((*raiz)->dir));
+	printf("comparando o fb de %d = %d\n", (*raiz)->info, fb);
 
-	int fb = abs(fatorBalanceamento((*raiz)->esq) - fatorBalanceamento((*raiz)->dir));
-
-	if (fb == 2){	
-		if ((*raiz)->esq && valor <= (*raiz)->esq->info){
+	if (fb > 1){	
+		printf("============ entrou aqui\n");
+		printf("============ antes\n");
+	    imprimir(raiz);
+		printf("\n");		
+		if ((*raiz)->esq && valor <= (*raiz)->info){
 			if((*raiz)->esq->esq)
 				rotacaoLL(&(*raiz)); 
 			else{
@@ -156,7 +161,13 @@ void inserir(arvAVL **raiz, int valor){
 				rotacaoRR(&(*raiz));
 			}
 		}
+        printf("============ depois\n");
+	    imprimir(raiz);
+		printf("\n");		
 	}
+	
+    (*raiz)->altura = 1 + max(altura((*raiz)->esq), altura((*raiz)->dir)); 
+
 } 
 
 void imprimir(arvAVL **raiz){
@@ -171,7 +182,7 @@ void imprimir(arvAVL **raiz){
   }
 }
 
-int main(){
+int main1(){
     arvAVL *raiz, *aux;
     arvAVL *maior;
     int nivel_menor = 0, nivel_maior;
@@ -190,7 +201,7 @@ int main(){
         // maior = NULL;
         clock_t inicio = clock();
 
-        for(int i = 0; i < 5; i++){
+        for(int i = 0; i < 39; i++){
             int num = gerarNumAleatorio();
             inserir(&raiz, num);
         }
@@ -224,18 +235,31 @@ int main(){
 }
 
 
-// int main(){ 
-//   arvAVL *root = NULL; 
+int main(){ 
+  arvAVL *root = NULL; 
 
-//   inserir(&root, 10); 
-//   inserir(&root, 20); 
-//   inserir(&root, 30); 
+//   inserir(&root, 647); 
+//   inserir(&root, 663); 
+//   inserir(&root, 930); 
+//   inserir(&root, 874); 
+//   inserir(&root, 665); 
+//   inserir(&root, 651); 
+//   inserir(&root, 770); 
+//   inserir(&root, 673); 
+//   inserir(&root, 988); 
+
+    inserir(&root, 663); 
+    inserir(&root, 647); 
+    inserir(&root, 930); 
+    inserir(&root, 874); 
+    inserir(&root, 665); 
+
 //   inserir(&root, 40); 
 //   inserir(&root, 50); 
 //   inserir(&root, 25); 
 
-//   imprimir(&root);
-//   printf("\n");
+  imprimir(&root);
+  printf("\n");
 
-//   return 0; 
-// } 
+  return 0; 
+} 
