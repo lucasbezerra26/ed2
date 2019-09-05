@@ -108,18 +108,7 @@ void inserir(arvAVL **raiz, int valor){
 				rotacaoRR(&(*raiz));
 			}
 		}
-
-		// if ((*raiz)->esq->info) { 
-		// 	rotacaoLL(&((*raiz)->esq)); 
-		// 	rotacaoRR(&(*raiz)); 
-		// } 
-
-		// if (valor < (*raiz)->dir->info) { 
-		// 	rotacaoRR(&((*raiz)->dir)); 
-		// 	rotacaoLL(&(*raiz)); 
-		// }
 	}
-
 } 
 
 void imprimir(arvAVL **raiz){
