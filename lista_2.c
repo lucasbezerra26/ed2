@@ -13,6 +13,10 @@ typedef struct arvAVL arvAVL;
 // Função utilizada para pegar o valor máximo entre os dois inteiros 
 int max(int a, int b); 
 
+
+void imprimir(arvAVL **raiz);
+
+
 // Pega a altura da árvore
 int altura(arvAVL *raiz){ 
 	if (raiz == NULL) 
@@ -85,12 +89,9 @@ void inserir(arvAVL **raiz, int valor){
 
 	(*raiz)->altura = 1 + max(altura((*raiz)->esq), altura((*raiz)->dir)); 
 
-	int fb = abs(fatorBalanceamento(*raiz));
-
-	printf("comparando o fb de %d = %d\n", (*raiz)->info, fb);
+	int fb = abs(fatorBalanceamento((*raiz)->esq) - fatorBalanceamento((*raiz)->dir));
 
 	if (fb == 2){	
-		printf("entrou aqui\n");
 		if ((*raiz)->esq && valor <= (*raiz)->esq->info){
 			if((*raiz)->esq->esq)
 				rotacaoLL(&(*raiz)); 
