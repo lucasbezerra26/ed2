@@ -85,23 +85,40 @@ void inserir(arvAVL **raiz, int valor){
 
 	(*raiz)->altura = 1 + max(altura((*raiz)->esq), altura((*raiz)->dir)); 
 
-	int fb = fatorBalanceamento(*raiz);
+	int fb = abs(fatorBalanceamento(*raiz));
 
-	if (fb > 1 && valor < (*raiz)->esq->info) 
-		rotacaoRR(&(*raiz)); 
+	printf("comparando o fb de %d = %d\n", (*raiz)->info, fb);
 
-	if (fb < -1 && valor > (*raiz)->dir->info) 
-		rotacaoLL(&(*raiz)); 
+	if (fb == 2){	
+		printf("entrou aqui\n");
+		if ((*raiz)->esq && valor <= (*raiz)->esq->info){
+			if((*raiz)->esq->esq)
+				rotacaoLL(&(*raiz)); 
+			else{
+				rotacaoRR(&(*raiz)->esq); 
+				rotacaoLL(&(*raiz));
+			}
+		}
+		else{
+			if((*raiz)->dir->dir)
+				rotacaoRR(&(*raiz)); 
+			else{
+				rotacaoLL(&(*raiz)->dir); 
+				rotacaoRR(&(*raiz));
+			}
+		}
 
-	if (fb > 1 && valor > (*raiz)->esq->info) { 
-		rotacaoLL(&((*raiz)->esq)); 
-		rotacaoRR(&(*raiz)); 
-	} 
+		// if ((*raiz)->esq->info) { 
+		// 	rotacaoLL(&((*raiz)->esq)); 
+		// 	rotacaoRR(&(*raiz)); 
+		// } 
 
-	if (fb < -1 && valor < (*raiz)->dir->info) { 
-		rotacaoRR(&((*raiz)->dir)); 
-		rotacaoLL(&(*raiz)); 
+		// if (valor < (*raiz)->dir->info) { 
+		// 	rotacaoRR(&((*raiz)->dir)); 
+		// 	rotacaoLL(&(*raiz)); 
+		// }
 	}
+
 } 
 
 void imprimir(arvAVL **raiz){
