@@ -132,9 +132,12 @@ int inserir(arvAVL **raiz, int valor){
             if (inserir(&((*raiz)->esq), valor) == 1){
                 if (abs(fatorBalanceamento(*raiz)) == 2){
                     printf("OLA");
-                    if(valor < ((*raiz)->esq)->info)
+                    if(valor < ((*raiz)->esq)->info){
+                        printf("Rotacao LL\n");
                         rotacaoLL(raiz);
+                    }
                     else{
+                        printf("Rotacao LR\n");
                         rotacaoRR(&((*raiz)->esq));
                         rotacaoLL(raiz);
                         
@@ -147,8 +150,12 @@ int inserir(arvAVL **raiz, int valor){
                 if (inserir(&((*raiz)->dir), valor) == 1){
                     if (abs(fatorBalanceamento(*raiz)) == 2){
                         if(valor > ((*raiz)->dir)->info){
+                            printf("Rotacao RR\n");
                             rotacaoRR(raiz);
                         }else{
+                            imprimir(raiz);
+                            printf("Rotacao RL\n");
+                            printf("Raiz %d\n",(*raiz)->info);
                             rotacaoLL(&((*raiz)->dir));
                             rotacaoRR(raiz);
                             // rotacaoRl(raiz);
@@ -160,7 +167,7 @@ int inserir(arvAVL **raiz, int valor){
         }
         (*raiz)->altura = max( altura((*raiz)->esq), altura((*raiz)->dir))+1;
     }
-    printf("ALTURA (%d): %d\n",valor, (*raiz)->altura);
+    // printf("ALTURA (%d): %d\n",valor, (*raiz)->altura);
     return insere;
 }
 
@@ -292,12 +299,12 @@ int main(){
     
     inserir(&root, 663); 
     inserir(&root, 647); 
-    /*inserir(&root, 930); 
+    inserir(&root, 930); 
     inserir(&root, 874); 
     inserir(&root, 665); 
-    inserir(&root, 664); 
-    inserir(&root, 662); ]
-    */
+    // inserir(&root, 664); 
+    // inserir(&root, 662); 
+    
     // inserir(&root, 667); 
     // inserir(&root, 668); 
     // inserir(&root, 669); 
