@@ -7,7 +7,6 @@ struct arvAVL{
 	int info; 
 	struct arvAVL *esq; 
 	struct arvAVL *dir; 
-	int altura; 
 };
 
 typedef struct arvAVL arvAVL;
@@ -20,9 +19,13 @@ void imprimir(arvAVL **raiz);
 
 // Pega a altura da árvore
 int altura(arvAVL *raiz){ 
+    int n = 0;
 	if (raiz == NULL) 
-		return 0; 
-	return raiz->altura; 
+		n = -1;
+    else
+        n = max(altura(raiz->esq), altura(raiz->dir)) + 1;
+	
+    return n; 
 } 
 
 int gerarNumAleatorio(){
@@ -40,7 +43,6 @@ arvAVL *alocaNo(int valor) {
 	no->info = valor; 
 	no->esq = NULL; 
 	no->dir = NULL; 
-	no->altura = 0; 
 	return no; 
 } 
 
@@ -130,32 +132,23 @@ int inserir(arvAVL **raiz, int valor){
     }else{
         if(valor < (*raiz)->info){
             if (inserir(&((*raiz)->esq), valor) == 1){
-                if (abs(fatorBalanceamento(*raiz)) == 2){
-                    printf("OLA");
+                if (abs(altura((*raiz)->esq) - altura((*raiz)->dir)) == 2){
                     if(valor < ((*raiz)->esq)->info){
-                        printf("Rotacao LL\n");
                         rotacaoLL(raiz);
                     }
                     else{
-                        printf("Rotacao LR\n");
                         rotacaoRR(&((*raiz)->esq));
                         rotacaoLL(raiz);
-                        
-                        // rotacaoLR(raiz);
                     }
                 }
             }     
         }else{
             if ( valor > (*raiz)->info ){
                 if (inserir(&((*raiz)->dir), valor) == 1){
-                    if (abs(fatorBalanceamento(*raiz)) == 2){
+                    if (abs(altura((*raiz)->esq) - altura((*raiz)->dir)) == 2){
                         if(valor > ((*raiz)->dir)->info){
-                            printf("Rotacao RR\n");
                             rotacaoRR(raiz);
                         }else{
-                            imprimir(raiz);
-                            printf("Rotacao RL\n");
-                            printf("Raiz %d\n",(*raiz)->info);
                             rotacaoLL(&((*raiz)->dir));
                             rotacaoRR(raiz);
                             // rotacaoRl(raiz);
@@ -165,59 +158,9 @@ int inserir(arvAVL **raiz, int valor){
             }else
                 insere = 0;
         }
-        (*raiz)->altura = max( altura((*raiz)->esq), altura((*raiz)->dir))+1;
     }
-    // printf("ALTURA (%d): %d\n",valor, (*raiz)->altura);
     return insere;
 }
-
-// Insere na árvore e já faz o balaceamento, caso necessario;
-// void inserir(arvAVL **raiz, int valor){ 
-// 	if (*raiz == NULL) {
-//         imprimir(raiz);
-// 		*raiz = alocaNo(valor); 
-//     }
-
-// 	if (valor < (*raiz)->info) 
-// 		inserir(&(*raiz)->esq, valor);
-
-// 	else if (valor > (*raiz)->info) 
-// 		inserir(&(*raiz)->dir, valor); 
-
-// 	int fb = abs(fatorBalanceamento(*raiz));
-//     printf("=========== %d\n", fatorBalanceamento((*raiz)->esq));
-//     printf("=========== %d\n", fatorBalanceamento((*raiz)->dir));
-// 	printf("comparando o fb de %d = %d\n", (*raiz)->info, fb);
-
-// 	if (fb > 1){	
-// 		printf("============ entrou aqui\n");
-// 		printf("============ antes\n");
-// 	    imprimir(raiz);
-// 		printf(" \nveio aqui\n");		
-// 		if ((*raiz)->esq && valor <= (*raiz)->info){
-// 			if((*raiz)->esq->esq)
-// 				rotacaoLL(&(*raiz)); 
-// 			else{
-// 				rotacaoRR(&(*raiz)->esq); 
-// 				rotacaoLL(&(*raiz));
-// 			}
-// 		}
-// 		else{
-// 			if((*raiz)->dir->dir)
-// 				rotacaoRR(&(*raiz)); 
-// 			else{
-// 				rotacaoLL(&(*raiz)->dir); 
-// 				rotacaoRR(&(*raiz));
-// 			}
-// 		}
-//         printf("============ depois\n");
-// 	    imprimir(raiz);
-// 		printf("\n");		
-// 	}
-	
-//     (*raiz)->altura = 1 + max(altura((*raiz)->esq), altura((*raiz)->dir)); 
-
-// } 
 
 void imprimir(arvAVL **raiz){
   if(*raiz){
@@ -231,7 +174,7 @@ void imprimir(arvAVL **raiz){
   }
 }
 
-int main1(){
+int main(){
     arvAVL *raiz, *aux;
     arvAVL *maior;
     int nivel_menor = 0, nivel_maior;
@@ -282,47 +225,3 @@ int main1(){
     }
     return 0;
 }
-
-
-int main(){ 
-  arvAVL *root = NULL; 
-
-//   inserir(&root, 647); 
-//   inserir(&root, 663); 
-//   inserir(&root, 930); 
-//   inserir(&root, 874); 
-//   inserir(&root, 665); 
-//   inserir(&root, 651); 
-//   inserir(&root, 770); 
-//   inserir(&root, 673); 
-//   inserir(&root, 988); 
-    
-    inserir(&root, 663); 
-    inserir(&root, 647); 
-    inserir(&root, 930); 
-    inserir(&root, 874); 
-    inserir(&root, 665); 
-    // inserir(&root, 664); 
-    // inserir(&root, 662); 
-    
-    // inserir(&root, 667); 
-    // inserir(&root, 668); 
-    // inserir(&root, 669); 
-    // inserir(&root, 670); 
-    // inserir(&root, 671); 
-    // inserir(&root, 600); 
-    // inserir(&root, 601); 
-    // inserir(&root, 602); 
-    // inserir(&root, 100); 
-    // inserir(&root, 1100); 
-
-
-//   inserir(&root, 40); 
-//   inserir(&root, 50); 
-//   inserir(&root, 25); 
-
-  imprimir(&root);
-  printf("\n");
-
-  return 0; 
-} 
