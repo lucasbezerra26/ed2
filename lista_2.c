@@ -124,51 +124,87 @@ int fatorBalanceamento(arvAVL *raiz){
 	return altura(raiz->esq) - altura(raiz->dir); 
 }
 
-// Insere na árvore e já faz o balaceamento, caso necessario;
-void inserir(arvAVL **raiz, int valor){ 
-	if (*raiz == NULL) 
-		*raiz = alocaNo(valor); 
+int inserir(arvAVL **raiz, int valor){
+    int insere = 1;
+    if( *raiz == NULL)
+        *raiz = alocaNo(valor);
+    else if(valor < (*raiz)->info){
+        if (inserir(&((*raiz)->esq), valor) == 1){
+            if( abs(fatorBalanceamento(*raiz)) == 2 ){
+                if(valor < (*raiz)->esq->info)
+                    rotacaoLL(raiz);
+                else{
+                    rotacaoLL(raiz);
+                    rotacaoRR(raiz);
+                    // rotacaoLR(raiz);
+                }
+            }
+        }        
+    }else if ( valor > (*raiz)->info ){
+        if (inserir(&((*raiz)->dir), valor) == 1){
+            if( abs(fatorBalanceamento(*raiz)) == 2 ){
+                if(valor > (*raiz)->esq->info)
+                    rotacaoRR(raiz);
+                else{
+                    rotacaoRR(raiz);
+                    rotacaoLL(raiz);
+                    // rotacaoRl(raiz);
+                }
+            }
+        }else
+            insere = 0;
+        (*raiz)->altura = max( altura((*raiz)->esq), altura((*raiz)->dir))+1;
+    }
+    return insere;
+}
 
-	if (valor < (*raiz)->info) 
-		inserir(&(*raiz)->esq, valor);
+// // Insere na árvore e já faz o balaceamento, caso necessario;
+// void inserir(arvAVL **raiz, int valor){ 
+// 	if (*raiz == NULL) {
+//         imprimir(raiz);
+// 		*raiz = alocaNo(valor); 
+//     }
 
-	else if (valor > (*raiz)->info) 
-		inserir(&(*raiz)->dir, valor); 
+// 	if (valor < (*raiz)->info) 
+// 		inserir(&(*raiz)->esq, valor);
 
-	int fb = abs(fatorBalanceamento(*raiz));
-    printf("=========== %d\n", fatorBalanceamento((*raiz)->esq));
-    printf("=========== %d\n", fatorBalanceamento((*raiz)->dir));
-	printf("comparando o fb de %d = %d\n", (*raiz)->info, fb);
+// 	else if (valor > (*raiz)->info) 
+// 		inserir(&(*raiz)->dir, valor); 
 
-	if (fb > 1){	
-		printf("============ entrou aqui\n");
-		printf("============ antes\n");
-	    imprimir(raiz);
-		printf("\n");		
-		if ((*raiz)->esq && valor <= (*raiz)->info){
-			if((*raiz)->esq->esq)
-				rotacaoLL(&(*raiz)); 
-			else{
-				rotacaoRR(&(*raiz)->esq); 
-				rotacaoLL(&(*raiz));
-			}
-		}
-		else{
-			if((*raiz)->dir->dir)
-				rotacaoRR(&(*raiz)); 
-			else{
-				rotacaoLL(&(*raiz)->dir); 
-				rotacaoRR(&(*raiz));
-			}
-		}
-        printf("============ depois\n");
-	    imprimir(raiz);
-		printf("\n");		
-	}
+// 	int fb = abs(fatorBalanceamento(*raiz));
+//     printf("=========== %d\n", fatorBalanceamento((*raiz)->esq));
+//     printf("=========== %d\n", fatorBalanceamento((*raiz)->dir));
+// 	printf("comparando o fb de %d = %d\n", (*raiz)->info, fb);
+
+// 	if (fb > 1){	
+// 		printf("============ entrou aqui\n");
+// 		printf("============ antes\n");
+// 	    imprimir(raiz);
+// 		printf(" \nveio aqui\n");		
+// 		if ((*raiz)->esq && valor <= (*raiz)->info){
+// 			if((*raiz)->esq->esq)
+// 				rotacaoLL(&(*raiz)); 
+// 			else{
+// 				rotacaoRR(&(*raiz)->esq); 
+// 				rotacaoLL(&(*raiz));
+// 			}
+// 		}
+// 		else{
+// 			if((*raiz)->dir->dir)
+// 				rotacaoRR(&(*raiz)); 
+// 			else{
+// 				rotacaoLL(&(*raiz)->dir); 
+// 				rotacaoRR(&(*raiz));
+// 			}
+// 		}
+//         printf("============ depois\n");
+// 	    imprimir(raiz);
+// 		printf("\n");		
+// 	}
 	
-    (*raiz)->altura = 1 + max(altura((*raiz)->esq), altura((*raiz)->dir)); 
+//     (*raiz)->altura = 1 + max(altura((*raiz)->esq), altura((*raiz)->dir)); 
 
-} 
+// } 
 
 void imprimir(arvAVL **raiz){
   if(*raiz){
@@ -201,7 +237,7 @@ int main1(){
         // maior = NULL;
         clock_t inicio = clock();
 
-        for(int i = 0; i < 39; i++){
+        for(int i = 0; i < 13; i++){
             int num = gerarNumAleatorio();
             inserir(&raiz, num);
         }
@@ -253,6 +289,19 @@ int main(){
     inserir(&root, 930); 
     inserir(&root, 874); 
     inserir(&root, 665); 
+    inserir(&root, 664); 
+    inserir(&root, 662); 
+    // inserir(&root, 667); 
+    // inserir(&root, 668); 
+    // inserir(&root, 669); 
+    // inserir(&root, 670); 
+    // inserir(&root, 671); 
+    // inserir(&root, 600); 
+    // inserir(&root, 601); 
+    // inserir(&root, 602); 
+    // inserir(&root, 100); 
+    // inserir(&root, 1100); 
+
 
 //   inserir(&root, 40); 
 //   inserir(&root, 50); 
