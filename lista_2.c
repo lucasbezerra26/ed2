@@ -117,48 +117,49 @@ arvAVL *busca (arvAVL **r, int k) {
 }
 
 
-// fator de balanceamento 
-int fatorBalanceamento(arvAVL *raiz){ 
-	if (raiz == NULL) 
-		return 0; 
-	return altura(raiz->esq) - altura(raiz->dir); 
-}
-
 int inserir(arvAVL **raiz, int valor){
     int insere = 1;
     if( *raiz == NULL)
         *raiz = alocaNo(valor);
-    else if(valor < (*raiz)->info){
-        if (inserir(&((*raiz)->esq), valor) == 1){
-            if( abs(fatorBalanceamento(*raiz)) == 2 ){
-                if(valor < (*raiz)->esq->info)
-                    rotacaoLL(raiz);
-                else{
-                    rotacaoLL(raiz);
-                    rotacaoRR(raiz);
-                    // rotacaoLR(raiz);
+    else{
+        if(valor < (*raiz)->info){
+            if (inserir(&((*raiz)->esq), valor) == 1){
+                if (abs((*raiz)->esq->altura - (*raiz)->dir->altura) == 2){
+                    printf("OLA");
+                    if(valor < ((*raiz)->esq)->info)
+                        printf("LL");                        //rotacaoLL(raiz);
+                    else{
+                        printf("LR");
+                        //rotacaoRR(&((*raiz)->esq));
+                        //rotacaoLL(raiz);
+                        
+                        // rotacaoLR(raiz);
+                    }
                 }
-            }
-        }        
-    }else if ( valor > (*raiz)->info ){
-        if (inserir(&((*raiz)->dir), valor) == 1){
-            if( abs(fatorBalanceamento(*raiz)) == 2 ){
-                if(valor > (*raiz)->esq->info)
-                    rotacaoRR(raiz);
-                else{
-                    rotacaoRR(raiz);
-                    rotacaoLL(raiz);
-                    // rotacaoRl(raiz);
+            }     
+        }else{
+            if ( valor > (*raiz)->info ){
+                if (inserir(&((*raiz)->dir), valor) == 1){
+                    if (abs((*raiz)->esq->altura - (*raiz)->dir->altura) == 2){
+                        if(valor > ((*raiz)->dir)->info){
+                            //rotacaoRR(raiz);
+                        }else{
+                            //rotacaoLL(&((*raiz)->dir));
+                            //rotacaoRR(raiz);
+                            // rotacaoRl(raiz);
+                        }
+                    }
                 }
-            }
-        }else
-            insere = 0;
+            }else
+                insere = 0;
+        }
         (*raiz)->altura = max( altura((*raiz)->esq), altura((*raiz)->dir))+1;
     }
+    printf("ALTURA (%d): %d\n",valor, (*raiz)->altura);
     return insere;
 }
 
-// // Insere na árvore e já faz o balaceamento, caso necessario;
+// Insere na árvore e já faz o balaceamento, caso necessario;
 // void inserir(arvAVL **raiz, int valor){ 
 // 	if (*raiz == NULL) {
 //         imprimir(raiz);
@@ -283,14 +284,15 @@ int main(){
 //   inserir(&root, 770); 
 //   inserir(&root, 673); 
 //   inserir(&root, 988); 
-
+    
     inserir(&root, 663); 
     inserir(&root, 647); 
-    inserir(&root, 930); 
+    /*inserir(&root, 930); 
     inserir(&root, 874); 
     inserir(&root, 665); 
     inserir(&root, 664); 
-    inserir(&root, 662); 
+    inserir(&root, 662); ]
+    */
     // inserir(&root, 667); 
     // inserir(&root, 668); 
     // inserir(&root, 669); 
