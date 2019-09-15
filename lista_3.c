@@ -134,19 +134,11 @@ void imprimir_equivalentes(equivalente *eq){
     printf("[");
     while (eq != NULL){
         if(eq->prox == NULL){
-            int x = 0;
-            while(eq->nome[x] != '\0'){
-                printf("%c", eq->nome[x]);
-                x++;
-            }
+            printf("%s", eq->nome);
         }else{
-            int x = 0;
-            while(eq->nome[x] != '\0'){
-                printf("%c", eq->nome[x]);
-                x++;
-            }
-            printf(", ");
+            printf("%s, ", eq->nome);
         }
+        eq = eq->prox;
     }
     printf("]");
 }
@@ -232,6 +224,7 @@ int main(){
         }
     }
     imprimir(&raiz);
+    printf("\n");
     fclose(arquivo);
     return 0;
 }

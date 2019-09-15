@@ -1,5 +1,5 @@
 %CUMPRIMENTOS
-hello:ola
+hello:ola,oi
 hi:oi
 good_morning:bom_dia
 good_afternoon:boa_tarde
