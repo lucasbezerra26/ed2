@@ -226,6 +226,58 @@ void imprime_busca(unidade **raiz, char *busca){
     }
 }
 
+void remove_equivalentes(equivalente *eqs){
+    if(eqs->prox == NULL){
+        free(eqs);
+    }else{
+        remove_equivalentes(eqs->prox);
+        free(eqs);
+    }
+}
+
+void remover(unidade **raiz, char *palavra, unidade **pai){
+    if(*raiz != NULL){
+        if (strcmp((*raiz)->palavra, palavra) == 0){
+            if((*raiz)->esq == NULL && (*raiz)->dir == NULL){
+                remove_equivalentes((*raiz)->equivalentes);
+                free(raiz);
+            }else if((*raiz)->esq == NULL && (*pai) != NULL){
+                if((*pai)->esq == (*raiz))
+                    (*pai)->esq = (*raiz)->dir;
+                else
+                    (*pai)->dir = (*raiz)->dir;
+
+                remove_equivalentes((*raiz)->equivalentes);
+                free(raiz);
+            }else if((*raiz)->dir == NULL && (*pai) != NULL){
+                if((*pai)->esq == (*raiz))
+                    (*pai)->esq = (*raiz)->dir;
+                else
+                    (*pai)->dir = (*raiz)->dir;
+
+                remove_equivalentes((*raiz)->equivalentes);
+                free(raiz);
+            }else if((*raiz)->esq == NULL){
+                unidade *aux = *raiz;
+                (*raiz) = (*raiz)->dir;
+                remove_equivalentes(aux->equivalentes);
+                free(aux);
+            }else{
+                unidade *aux = *raiz;
+                (*raiz) = (*raiz)->esq;
+                remove_equivalentes(aux->equivalentes);
+                free(aux);
+            }
+        }else{
+            if(strcmp((*raiz)->palavra, palavra) > 0){
+                remover(&(*raiz)->dir, palavra, raiz);
+            }else{
+                remover(&(*raiz)->dir, palavra, raiz);
+            }
+        }
+    }
+}
+
 
 int main(){
     FILE *arquivo;
@@ -250,5 +302,19 @@ int main(){
     printf("Pesquise por a palavra em inglês: ");
     scanf(" %s", palavra);
     imprime_busca(&raiz, palavra);
+
+    printf("--------------\n");
+
+    printf("Pesquise por a palavra que deseja remover: ");
+    scanf(" %s", palavra);
+    remover(&raiz, palavra, &raiz);
+
+
+    printf("Imprimindo a árvore:\n");
+    printf("-------------------------\n");
+    imprimir(&raiz);
+    printf("\n");
+    printf("-------------------------\n");
+
     return 0;
 }
