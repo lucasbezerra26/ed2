@@ -1,0 +1,11 @@
+%CUMPRIMENTOS
+hello:ola
+hi:oi
+good_morning:bom_dia
+good_afternoon:boa_tarde
+good_evening:boa_noite
+welcome:seja_bem_vindo
+how_are_you:como_vai_voce
+goodbye:tchau
+see_you:are_logo
+whats_up:eae
