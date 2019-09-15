@@ -177,35 +177,36 @@ void grava_dados(char linha[], unidade **raiz){
 
     }else{
         int qtd = 1;
-        char *palavra, *p_equivalente;
-        palavra = (char *) malloc(sizeof(char));
-        p_equivalente = (char *) malloc(sizeof(char));
+        char *palavra_ingles, *palavra_portugues;
+        palavra_ingles = (char *) malloc(sizeof(char));
+        palavra_portugues = (char *) malloc(sizeof(char));
         while (linha[x] != ':'){
-            palavra = realloc(palavra, qtd * sizeof(char));
-            palavra[qtd-1] = linha[x];
+            palavra_ingles = realloc(palavra_ingles, qtd * sizeof(char));
+            palavra_ingles[qtd-1] = linha[x];
             qtd++;
             x++;
         }
-        palavra = realloc(palavra, qtd * sizeof(char));        
-        palavra[qtd-1] = '\0';
-        inserir(raiz, palavra);
+        palavra_ingles = realloc(palavra_ingles, qtd * sizeof(char));        
+        palavra_ingles[qtd-1] = '\0';
 
         x++;
         qtd = 1;
         while(linha[x] != '\0'){
-            p_equivalente = realloc(p_equivalente, qtd * sizeof(char));
-            p_equivalente[qtd-1] = linha[x];
+            palavra_portugues = realloc(palavra_portugues, qtd * sizeof(char));
+            palavra_portugues[qtd-1] = linha[x];
             if (linha[x] == ','){
-                p_equivalente[qtd-1] = '\0';
-                inserir_equivalente(raiz, palavra, p_equivalente);
+                palavra_portugues[qtd-1] = '\0';
+                inserir(raiz, palavra_portugues);
+                inserir_equivalente(raiz, palavra_portugues, palavra_ingles);
                 qtd = 0;           
             }   
             qtd++;
             x++;
         }
-        p_equivalente[qtd-1] = '\0';
-        inserir_equivalente(raiz, palavra, p_equivalente);
-        
+        palavra_portugues[qtd-1] = '\0';
+        inserir(raiz, palavra_portugues);
+        inserir_equivalente(raiz, palavra_portugues, palavra_ingles);
+
     }
 }
 
