@@ -93,7 +93,8 @@ unidade *retorna_no(unidade **raiz, char *palavra){
 
 
 void inserir(unidade **raiz, char *palavra){
-    if( *raiz == NULL){
+    if(*raiz == NULL){
+        printf("inseri %s\n", (*raiz)->palavra);
         strcpy((*raiz)->palavra, palavra);
     }else{
         // Se a palavra for menor que a atual
@@ -166,13 +167,14 @@ void grava_dados(char linha[], unidade **raiz){
         nome_unidade = (char *) malloc(sizeof(char));
         while (linha[x] != '\0'){
             nome_unidade = realloc(nome_unidade, x * sizeof(char));
-            nome_unidade[x] = linha[x];
+            nome_unidade[x-1] = linha[x];
             x++;
         }
         nome_unidade = realloc(nome_unidade, x * sizeof(char));
-        nome_unidade[x] = '\0';
+        nome_unidade[x-1] = '\0';
 
         strcpy((*raiz)->nome_unidade, nome_unidade);
+        strcpy((*raiz)->palavra, nome_unidade);
 
     }else{
         int qtd = 1;
@@ -181,27 +183,27 @@ void grava_dados(char linha[], unidade **raiz){
         p_equivalente = (char *) malloc(sizeof(char));
         while (linha[x] != ':'){
             palavra = realloc(palavra, qtd * sizeof(char));
-            palavra[qtd] = linha[x];
+            palavra[qtd-1] = linha[x];
             qtd++;
             x++;
         }
         palavra = realloc(palavra, qtd * sizeof(char));        
-        palavra[qtd] = '\0';
+        palavra[qtd-1] = '\0';
         inserir(raiz, palavra);
 
         qtd = 1;
         while(linha[x] != '\0'){
             p_equivalente = realloc(p_equivalente, qtd * sizeof(char));
-            p_equivalente[qtd] = linha[x];
+            p_equivalente[qtd-1] = linha[x];
             if (linha[x] == ','){
-                p_equivalente[qtd] = '\0';
+                p_equivalente[qtd-1] = '\0';
                 inserir_equivalente(raiz, palavra, p_equivalente);
                 qtd = 0;           
             }   
             qtd++;
             x++;
         }
-        p_equivalente[qtd] = '\0';
+        p_equivalente[qtd-1] = '\0';
         inserir_equivalente(raiz, palavra, p_equivalente);
     }
 }
