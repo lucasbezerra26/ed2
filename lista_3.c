@@ -210,6 +210,23 @@ void grava_dados(char linha[], unidade **raiz){
     }
 }
 
+void imprime_busca(unidade **raiz, char *busca){
+    if(*raiz != NULL){
+        if((*raiz)->qtd_equivalentes > 0){
+            equivalente *aux = (*raiz)->equivalentes;
+            while(aux != NULL){
+                if(strcmp(aux->nome, busca) == 0){
+                    printf("Palavra %s equivalência em português: %s\n", busca, (*raiz)->palavra);
+                }
+                aux = aux->prox;
+            }
+        }
+        imprime_busca(&(*raiz)->esq, busca);
+        imprime_busca(&(*raiz)->dir, busca);
+    }
+}
+
+
 int main(){
     FILE *arquivo;
     arquivo = fopen("lista_3.txt", "r");
@@ -222,8 +239,16 @@ int main(){
             grava_dados(string, &raiz);
         }
     }
+    fclose(arquivo);
+    printf("Imprimindo a árvore:\n");
+    printf("-------------------------\n");
     imprimir(&raiz);
     printf("\n");
-    fclose(arquivo);
+    printf("-------------------------\n");
+
+    char palavra[100];
+    printf("Pesquise por a palavra em inglês: ");
+    scanf(" %s", palavra);
+    imprime_busca(&raiz, palavra);
     return 0;
 }
