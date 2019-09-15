@@ -82,7 +82,7 @@ unidade *retorna_no(unidade **raiz, char *palavra){
     }else{
         if(strcmp(palavra, (*raiz)->palavra) == 0){
             aux = *raiz;
-        }else if(strcmp(palavra, (*raiz)->palavra) == -1){
+        }else if(strcmp(palavra, (*raiz)->palavra) < 0){
             aux = retorna_no(&(*raiz)->esq, palavra);
         }else{
             aux = retorna_no(&(*raiz)->dir, palavra);
@@ -94,16 +94,17 @@ unidade *retorna_no(unidade **raiz, char *palavra){
 
 void inserir(unidade **raiz, char *palavra){
     if(*raiz == NULL){
-        printf("inseri %s\n", (*raiz)->palavra);
+        *raiz = alocaNo();
         strcpy((*raiz)->palavra, palavra);
     }else{
         // Se a palavra for menor que a atual
-        if (strcmp(palavra, (*raiz)->palavra) == -1){
+        if (strcmp(palavra, (*raiz)->palavra) < 0){
             inserir(&(*raiz)->esq, palavra);
         }else{
             //se a palavra que vou inserir é maior que a que está na árvore
-            if (strcmp(palavra, (*raiz)->palavra) == 1)
+            if (strcmp(palavra, (*raiz)->palavra) > 0){
                 inserir(&(*raiz)->dir, palavra);
+            }
         }
     }
 }
@@ -147,10 +148,8 @@ void imprimir_equivalentes(equivalente *eq){
 void imprimir(unidade **raiz){
     if(*raiz){
         printf("(");
-        // printf("%s ", (*raiz)->estrutura);
         printf("%s ", (*raiz)->palavra);
         imprimir_equivalentes((*raiz)->equivalentes);
-        // printf("%s ", (*raiz)->equivalentes);
         imprimir(&(*raiz)->esq);
         imprimir(&(*raiz)->dir);
         printf(")");
@@ -191,6 +190,7 @@ void grava_dados(char linha[], unidade **raiz){
         palavra[qtd-1] = '\0';
         inserir(raiz, palavra);
 
+        x++;
         qtd = 1;
         while(linha[x] != '\0'){
             p_equivalente = realloc(p_equivalente, qtd * sizeof(char));
@@ -205,15 +205,11 @@ void grava_dados(char linha[], unidade **raiz){
         }
         p_equivalente[qtd-1] = '\0';
         inserir_equivalente(raiz, palavra, p_equivalente);
+        
     }
 }
 
 int main(){
-    // char gerandoUmaEntrada[] = {"%basico indice:index"} ;
-    // printf("%s",gerandoUmaEntrada);
-    // char gerandoUmaEntrada[] = {"%Basico:encontrar:find"} 
-    // alocaNo(gerandoUmaEntrada);
-    
     FILE *arquivo;
     arquivo = fopen("lista_3.txt", "r");
     unidade *raiz;
