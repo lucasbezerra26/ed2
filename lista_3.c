@@ -201,28 +201,21 @@ void remove_equivalentes(equivalente *eqs){
 void remover(unidade **raiz, char *palavra, unidade **pai){
     if(*raiz != NULL){
         if (strcmp((*raiz)->palavra, palavra) == 0){
+            printf("te achei\n");
             if((*raiz)->esq == NULL && (*raiz)->dir == NULL){
                 remove_equivalentes((*raiz)->equivalentes);
                 free(*raiz);
                 *raiz = NULL;
             }else if((*raiz)->esq == NULL && (*pai) != NULL){
-                if((*pai)->esq == (*raiz))
-                    (*pai)->esq = (*raiz)->dir;
-                else
-                    (*pai)->dir = (*raiz)->dir;
-
+                unidade *aux = (*raiz);
                 remove_equivalentes((*raiz)->equivalentes);
-                free(*raiz);
-                *raiz = NULL;
+                (*raiz) = (*raiz)->dir;
+                free(aux);
             }else if((*raiz)->dir == NULL && (*pai) != NULL){
-                if((*pai)->esq == (*raiz))
-                    (*pai)->esq = (*raiz)->dir;
-                else
-                    (*pai)->dir = (*raiz)->dir;
-
+                unidade *aux = (*raiz);
                 remove_equivalentes((*raiz)->equivalentes);
-                free(*raiz);
-                *raiz = NULL;
+                (*raiz) = (*raiz)->esq;
+                free(aux);
             }else if((*raiz)->esq == NULL){
                 unidade *aux = *raiz;
                 (*raiz) = (*raiz)->dir;
@@ -235,10 +228,10 @@ void remover(unidade **raiz, char *palavra, unidade **pai){
                 free(aux);
             }
         }else{
-            if(strcmp((*raiz)->palavra, palavra) > 0){
+            if(strcmp(palavra, (*raiz)->palavra) > 0){
                 remover(&(*raiz)->dir, palavra, raiz);
             }else{
-                remover(&(*raiz)->dir, palavra, raiz);
+                remover(&(*raiz)->esq, palavra, raiz);
             }
         }
     }
@@ -281,6 +274,8 @@ int main(){
     imprimir(&raiz);
     printf("\n");
     printf("-------------------------\n");
+
+    free(raiz);
 
     return 0;
 }
