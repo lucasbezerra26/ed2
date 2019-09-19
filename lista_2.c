@@ -174,9 +174,112 @@ void imprimir(arvAVL **raiz){
   }
 }
 
+//----------------------Rubro-Negra-----------------------
+
+typedef struct node{
+    int info;
+    int isRed;
+    struct node* left;
+    struct node* right;
+} node;
+
+// typedef struct ocorrencia{
+//     int num, casos;
+//     struct ocorrencia *prox;
+// }ocorrencia;
+
+int cor(node* no){
+    return (no == NULL) ? 0 : no->isRed;
+}
+
+node* rotacionaEsquerda(node* no){
+    node* novo;
+    novo = (node*)malloc(sizeof(node));
+
+    novo = no->right;
+    no->right = novo->left;
+    novo->left = no;
+    novo->isRed = no->isRed;
+    no->isRed = 1;
+    return novo;
+}
+
+node* rotacionaDireita(node* no){
+    node* novo;
+    novo = (node*)malloc(sizeof(node));
+
+    novo = no->left;
+    no->left = novo->right;
+    novo->right = no;
+    novo->isRed = no->isRed;
+    no->isRed = 1;
+    return novo;
+}
+
+node* troca_cor(node* no){
+    no->isRed = 1;
+    no->left->isRed = 0;
+    no->right->isRed = 0;
+    return no;
+}
+
+
+node* insertLLRN(node* no, int valor){
+    node* novo;
+
+    if(no == NULL){
+        novo = (node*)malloc(sizeof(node));
+        novo->info = valor;
+        novo->left = NULL;
+        novo->right = NULL;
+        novo->isRed = 1;
+        return novo;
+    }
+
+    if(valor < no->info)
+        no->left = insertLLRN(no->left, valor);
+    else
+        no->right = insertLLRN(no->right, valor);
+
+
+    if(cor(no->left) == 0 && cor(no->right) == 1)
+        no = rotacionaEsquerda(no);
+
+    if(cor(no->left) == 1 && cor(no->left->left) == 1)
+        no = rotacionaDireita(no);
+
+    if(cor(no->left) == 1 && cor(no->right) == 1){
+        no = troca_cor(no);
+    }
+
+    return no;
+}
+
+node* insert(node* no, int valor){
+    no = insertLLRN(no, valor);
+    no->isRed = 0;
+    return no;
+}
+
+void mostra_arvore(node **no){
+    if(*no){
+        printf("(");
+        printf("%d->%c ", (*no)->info, ((*no)->isRed == 1) ? 'V' : 'P');
+        mostra_arvore(&(*no)->left);
+        mostra_arvore(&(*no)->right);
+        printf(")");
+    }else{
+        printf("()");
+  }
+}
+
+
 int main(){
-    arvAVL *raiz, *aux;
+    arvAVL *raizAvl, *aux;
     arvAVL *maior;
+    
+    node *raizRB = malloc(sizeof(node));
+
     int nivel_menor = 0, nivel_maior;
     srand(time(NULL));
     int *vetor;
@@ -189,29 +292,31 @@ int main(){
         printf("======= %d INTERAÇÃO =========\n", i+1);
         printf("+----------------------------+\n");
         
-        raiz = NULL;
+        raizAvl = NULL;
         // maior = NULL;
         clock_t inicio = clock();
 
         for(int i = 0; i < 1000; i++){
             int num = gerarNumAleatorio();
-            inserir(&raiz, num);
+            inserir(&raizAvl, num);
+            raizRB = insert(raizRB, num);
         }
         clock_t fim = clock();
         float segundos = (float)(fim - inicio) / CLOCKS_PER_SEC;
         printf("Inserido 1000 elementos em %.4f segundos.\n", segundos);
-        imprimir(&raiz);
+        imprimir(&raizAvl);
+        mostra_arvore(&raizRB);
         printf("\n");
 
-        profundidade_maior(&raiz, &maior, &nivel_maior);
+        profundidade_maior(&raizAvl, &maior, &nivel_maior);
         printf("Maior Nível: %d\n", nivel_maior);
 
-        profundidade_menor(&raiz, &aux, &nivel_menor);
+        profundidade_menor(&raizAvl, &aux, &nivel_menor);
         printf("Menor Nível: %d\n", nivel_menor);
         // printf("Num: %d \n", num);
 
         inicio = clock();
-        busca(&raiz, 30);
+        busca(&raizAvl, 30);
         fim = clock();
         segundos = (float)(fim - inicio) / CLOCKS_PER_SEC;
         printf("Busca do elemento 30. Demorou em %.4f segundos.\n", segundos);
