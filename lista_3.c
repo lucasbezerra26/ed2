@@ -227,11 +227,13 @@ void imprime_busca(unidade **raiz, char *busca){
 }
 
 void remove_equivalentes(equivalente *eqs){
-    if(eqs->prox == NULL){
-        free(eqs);
-    }else{
-        remove_equivalentes(eqs->prox);
-        free(eqs);
+    if(eqs != NULL){
+        if(eqs->prox == NULL){
+            free(eqs);
+        }else{
+            remove_equivalentes(eqs->prox);
+            free(eqs);
+        }
     }
 }
 
@@ -307,7 +309,7 @@ int main(){
 
     printf("Pesquise por a palavra que deseja remover: ");
     scanf(" %s", palavra);
-    remover(&raiz, palavra, &raiz);
+    remover(&raiz, palavra, NULL);
 
 
     printf("Imprimindo a árvore:\n");
