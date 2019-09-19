@@ -26,45 +26,6 @@ struct unidade{
 
 typedef struct unidade unidade;
 
-// char *pegandoPalavra(char *string){
-//     int tamanho = strlen(string), copia,a;
-//     char *substring =(char*) malloc(sizeof(char)*100);
-//     for(int i=0; i<tamanho; i++ ){
-//         if( string[i] == ':' ){
-//             for(a=i; string[a] != ' ' ;a-- );
-//             // printf("Numero %d\n",a);
-//             for(int x=a+1; x<=i ;x++ ){
-//                 char strChar[1];
-//                 strChar[0] = string[x];
-//                 strcat(substring, strChar);
-//                 // printf("2- %c\n", string[x]);
-//             } 
-//             break;
-//         }
-//     }
-//     return substring;
-// }
-
-// char *pegandoPalavraFacil(char *string, char caracInicio, char caracFim){
-//     int tamanho = strlen(string), copia=0;
-//     char *substring = (char *)malloc(sizeof(char) * 100);
-//     for(int i=0; i<tamanho; i++ ){
-//         if (string[i] == caracInicio){
-//             copia = 1;
-//             continue;
-//         }
-//         if(string[i] == caracFim )
-//             break;
-//         if( copia == 1){
-//             char strChar[1];
-//             strChar[0] = string[i];
-//             // printf("1- %c\n", string[i]);
-//             strcat(substring, strChar);
-//         }
-//     }
-//     return substring;
-// }
-
 unidade *alocaNo(){
     unidade *aux;
     aux =(unidade*) malloc(sizeof(unidade));
@@ -242,7 +203,8 @@ void remover(unidade **raiz, char *palavra, unidade **pai){
         if (strcmp((*raiz)->palavra, palavra) == 0){
             if((*raiz)->esq == NULL && (*raiz)->dir == NULL){
                 remove_equivalentes((*raiz)->equivalentes);
-                free(raiz);
+                free(*raiz);
+                *raiz = NULL;
             }else if((*raiz)->esq == NULL && (*pai) != NULL){
                 if((*pai)->esq == (*raiz))
                     (*pai)->esq = (*raiz)->dir;
@@ -250,7 +212,8 @@ void remover(unidade **raiz, char *palavra, unidade **pai){
                     (*pai)->dir = (*raiz)->dir;
 
                 remove_equivalentes((*raiz)->equivalentes);
-                free(raiz);
+                free(*raiz);
+                *raiz = NULL;
             }else if((*raiz)->dir == NULL && (*pai) != NULL){
                 if((*pai)->esq == (*raiz))
                     (*pai)->esq = (*raiz)->dir;
@@ -258,7 +221,8 @@ void remover(unidade **raiz, char *palavra, unidade **pai){
                     (*pai)->dir = (*raiz)->dir;
 
                 remove_equivalentes((*raiz)->equivalentes);
-                free(raiz);
+                free(*raiz);
+                *raiz = NULL;
             }else if((*raiz)->esq == NULL){
                 unidade *aux = *raiz;
                 (*raiz) = (*raiz)->dir;
@@ -301,11 +265,11 @@ int main(){
     printf("-------------------------\n");
 
     char palavra[100];
-    printf("Pesquise por a palavra em inglês: ");
-    scanf(" %s", palavra);
-    imprime_busca(&raiz, palavra);
+    // printf("Pesquise por a palavra em inglês: ");
+    // scanf(" %s", palavra);
+    // imprime_busca(&raiz, palavra);
 
-    printf("--------------\n");
+    // printf("--------------\n");
 
     printf("Pesquise por a palavra que deseja remover: ");
     scanf(" %s", palavra);
