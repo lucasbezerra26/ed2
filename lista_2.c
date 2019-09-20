@@ -36,7 +36,7 @@ int max(int a, int b) {
 	return (a > b)? a : b; 
 } 
 
-// Aloca um novo nó, adiciona o valor a ele e inicializa os ponteiros da esquerda 
+// // Aloca um novo nó, adiciona o valor a ele e inicializa os ponteiros da esquerda 
 // e direita com null
 arvAVL *alocaNo(int valor) { 
 	arvAVL *no = (arvAVL*) malloc(sizeof(arvAVL)); 
@@ -118,7 +118,7 @@ arvAVL *busca (arvAVL **r, int k) {
        return busca(&(*r)->dir, k);
 }
 
-int fatorBalanceamento(arvAVL *raiz){ 
+int fatoRNalanceamento(arvAVL *raiz){ 
 	if (raiz == NULL) 
 		return 0; 
 	return altura(raiz->esq) - altura(raiz->dir); 
@@ -176,114 +176,172 @@ void imprimir(arvAVL **raiz){
 
 //----------------------Rubro-Negra-----------------------
 
-typedef struct node{
+typedef struct arvRN{
     int info;
-    int isRed;
-    struct node* left;
-    struct node* right;
-} node;
+    int vermelha;
+    struct arvRN* esq;
+    struct arvRN* dir;
+}arvRN;
 
-// typedef struct ocorrencia{
-//     int num, casos;
-//     struct ocorrencia *prox;
-// }ocorrencia;
+//  arvRN arvRN;
 
-int cor(node* no){
-    return (no == NULL) ? 0 : no->isRed;
+int cor(arvRN* no){
+    return (no == NULL) ? 0 : no->vermelha;
 }
 
-node* rotacionaEsquerda(node* no){
-    node* novo;
-    novo = (node*)malloc(sizeof(node));
-
-    novo = no->right;
-    no->right = novo->left;
-    novo->left = no;
-    novo->isRed = no->isRed;
-    no->isRed = 1;
+arvRN *rotacionaLLRN(arvRN* no){
+    arvRN* novo;
+    novo = (arvRN*)malloc(sizeof(arvRN));
+    novo = no->dir;
+    no->dir = novo->esq;
+    novo->esq = no;
+    novo->vermelha = no->vermelha;
+    no->vermelha = 1;
     return novo;
 }
 
-node* rotacionaDireita(node* no){
-    node* novo;
-    novo = (node*)malloc(sizeof(node));
-
-    novo = no->left;
-    no->left = novo->right;
-    novo->right = no;
-    novo->isRed = no->isRed;
-    no->isRed = 1;
+arvRN *rotacionaRRRN(arvRN* no){
+    arvRN* novo;
+    novo = (arvRN*)malloc(sizeof(arvRN));
+    novo = no->esq;
+    no->esq = novo->dir;
+    novo->dir = no;
+    novo->vermelha = no->vermelha;
+    no->vermelha = 1;
     return novo;
 }
 
-node* troca_cor(node* no){
-    no->isRed = 1;
-    no->left->isRed = 0;
-    no->right->isRed = 0;
+arvRN *troca_cor(arvRN* no){
+    no->vermelha = 1;
+    no->esq->vermelha = 0;
+    no->dir->vermelha = 0;
     return no;
 }
 
-
-node* insertLLRN(node* no, int valor){
-    node* novo;
-
+arvRN *alocaNoRN(int valor){
+    arvRN *no;
+    no = (arvRN *)malloc(sizeof(arvRN));
+    no->info = valor;
+    no->esq = NULL;
+    no->dir = NULL;
+    no->vermelha = 1;
+    return no;
+}
+arvRN* inseRN(arvRN* no, int valor){
     if(no == NULL){
-        novo = (node*)malloc(sizeof(node));
-        novo->info = valor;
-        novo->left = NULL;
-        novo->right = NULL;
-        novo->isRed = 1;
-        return novo;
+        return alocaNoRN(valor);
     }
 
     if(valor < no->info)
-        no->left = insertLLRN(no->left, valor);
+        no->esq = inseRN(no->esq, valor);
     else
-        no->right = insertLLRN(no->right, valor);
+        no->dir = inseRN(no->dir, valor);
 
 
-    if(cor(no->left) == 0 && cor(no->right) == 1)
-        no = rotacionaEsquerda(no);
+    if(cor(no->esq) == 0 && cor(no->dir) == 1)
+        no = rotacionaLLRN(no);
 
-    if(cor(no->left) == 1 && cor(no->left->left) == 1)
-        no = rotacionaDireita(no);
+    if(cor(no->esq) == 1 && cor(no->esq->esq) == 1)
+        no = rotacionaRRRN(no);
 
-    if(cor(no->left) == 1 && cor(no->right) == 1){
+    if(cor(no->esq) == 1 && cor(no->dir) == 1){
         no = troca_cor(no);
     }
 
     return no;
 }
 
-node* insert(node* no, int valor){
-    no = insertLLRN(no, valor);
-    no->isRed = 0;
-    return no;
+arvRN* inserirRN(arvRN** no, int valor){
+    *no = inseRN(*no, valor);
+    (*no)->vermelha = 0;
 }
 
-void mostra_arvore(node **no){
+void imprimirRN(arvRN **no){
     if(*no){
         printf("(");
-        printf("%d->%c ", (*no)->info, ((*no)->isRed == 1) ? 'V' : 'P');
-        mostra_arvore(&(*no)->left);
-        mostra_arvore(&(*no)->right);
+        printf("%d->", (*no)->info);
+        if ((*no)->vermelha == 1){
+            printf("v ");
+        }else{
+            printf("p ");
+        }
+        imprimirRN(&(*no)->esq);
+        imprimirRN(&(*no)->dir);
         printf(")");
     }else{
         printf("()");
   }
 }
 
+arvRN *buscaRN (arvRN **r, int k) {
+    if (*r == NULL || (*r)->info == k)
+       return *r;
+    if ((*r)->info > k)
+       return buscaRN(&(*r)->esq, k);
+    else
+       return buscaRN(&(*r)->dir, k);
+}
+
+int numeroNosRN(arvRN *raiz){
+	if(raiz == NULL ) return 0;
+	return numeroNosRN(raiz->esq)+1+numeroNosRN(raiz->dir);
+}
+
+void profundidade_maiorRN(arvRN **raiz,arvRN **maior, int *nivel){
+    int numeroNoDir = numeroNosRN((*raiz)->dir);
+    int numeroNoEsq = numeroNosRN((*raiz)->esq);
+    if(!((*raiz)->dir == NULL && (*raiz)->esq == NULL)){
+        (*nivel)++;
+        if(numeroNoDir > numeroNoEsq){
+            (*maior) =  (*raiz)->dir;
+            profundidade_maiorRN(&(*raiz)->dir, &(*maior), nivel);
+        }else{
+            (*maior) =  (*raiz)->esq;
+            profundidade_maiorRN(&(*raiz)->esq, &(*maior), nivel);
+        }
+    }
+}
+
+void profundidade_menorRN(arvRN **raiz,arvRN **menor, int *nivel){
+    int numeroNoDir = numeroNosRN((*raiz)->dir);
+    int numeroNoEsq = numeroNosRN((*raiz)->esq);
+    if( ((*raiz)->dir != NULL) && ((*raiz)->esq != NULL) ){
+        (*nivel)++;
+        if(numeroNoDir < numeroNoEsq){
+            (*menor) =  (*raiz)->dir;
+            profundidade_menorRN(&(*raiz)->dir, &(*menor), nivel);
+        }else{
+            (*menor) =  (*raiz)->esq;
+            profundidade_menorRN(&(*raiz)->esq, &(*menor), nivel);
+        }
+    }else{
+        if ((*raiz)->dir == NULL && (*raiz)->esq != NULL){
+            profundidade_menorRN(&(*raiz)->esq, &(*menor), nivel);
+        }else{
+            if( (*raiz)->dir != NULL && (*raiz)->esq == NULL ){
+                profundidade_menorRN(&(*raiz)->dir, &(*menor), nivel);
+            }else{
+                (*menor) = (*raiz);
+            }
+        }
+    }
+}
 
 int main(){
+
+    
     arvAVL *raizAvl, *aux;
     arvAVL *maior;
     
-    node *raizRB = malloc(sizeof(node));
-
+    arvRN *raizRN = malloc(sizeof(arvRN));
+    arvRN *maiorRN,*auxRN;
     int nivel_menor = 0, nivel_maior;
+    int nivel_menorRN = 0, nivel_maiorRN;
     srand(time(NULL));
     int *vetor;
+    int *vetorRN;
     vetor = (int*) calloc(sizeof(int),1000);
+    vetorRN = (int*) calloc(sizeof(int),1000);
     for (int i = 0; i < 30; i++){
         nivel_menor = 0;
         nivel_maior =  0;
@@ -292,40 +350,82 @@ int main(){
         printf("======= %d INTERAÇÃO =========\n", i+1);
         printf("+----------------------------+\n");
         
+        maior = NULL;
+        maiorRN = NULL;
         raizAvl = NULL;
-        // maior = NULL;
-        clock_t inicio = clock();
+        raizRN = NULL;
+        int num[1000];
+        for( int x=0;x<1000;x++)
+            num[x] = gerarNumAleatorio();
 
+        clock_t inicio = clock();
         for(int i = 0; i < 1000; i++){
-            int num = gerarNumAleatorio();
-            inserir(&raizAvl, num);
-            raizRB = insert(raizRB, num);
+            inserir(&raizAvl, num[i]); //inserindo na arvore avl
         }
         clock_t fim = clock();
         float segundos = (float)(fim - inicio) / CLOCKS_PER_SEC;
-        printf("Inserido 1000 elementos em %.4f segundos.\n", segundos);
+        printf("Inserido 1000 elementos na arvore AVL em %.4f segundos.\n", segundos);
+
+        inicio = clock();
+        for(int i = 0; i < 1000; i++){
+            inserirRN(&raizRN, num[i]); //inserindo na arvore Rubro Negra
+        }
+        fim = clock();
+        float segundosRN = (float)(fim - inicio) / CLOCKS_PER_SEC;
+        printf("Inserido 1000 elementos na arvore Rubro-Negra em %.4f segundos.\n", segundosRN);
+
+        if (segundos > segundosRN){
+            printf("O tempo na AVL foi mais rápido");
+        }else{
+            if (segundos < segundosRN)
+                printf("O tempo na Rubro Negra foi mais rápido");
+            else
+                printf("O tempo nas duas ávores foram iguais");
+        }
+        
+        printf("\nArvore AVL\n");
         imprimir(&raizAvl);
-        mostra_arvore(&raizRB);
+        printf("\n");
+        printf("\nArvore Rubro Negra\n");
+        imprimirRN(&raizRN);
         printf("\n");
 
         profundidade_maior(&raizAvl, &maior, &nivel_maior);
-        printf("Maior Nível: %d\n", nivel_maior);
-
         profundidade_menor(&raizAvl, &aux, &nivel_menor);
-        printf("Menor Nível: %d\n", nivel_menor);
-        // printf("Num: %d \n", num);
+        printf("Maior Nível da AVL: %d\n", nivel_maior);
+        printf("Menor Nível da AVl: %d\n", nivel_menor);
+
+        profundidade_maiorRN(&raizRN, &maiorRN, &nivel_maiorRN);
+        profundidade_menorRN(&raizRN, &auxRN, &nivel_menorRN);
+        printf("Maior Nível da RN: %d\n", nivel_maiorRN);
+        printf("Menor Nível da RN: %d\n", nivel_menorRN);
 
         inicio = clock();
         busca(&raizAvl, 30);
         fim = clock();
         segundos = (float)(fim - inicio) / CLOCKS_PER_SEC;
-        printf("Busca do elemento 30. Demorou em %.4f segundos.\n", segundos);
-        int difrenca = nivel_maior-nivel_menor;
-        vetor[difrenca]++;
+        printf("Busca do elemento 30 na AVL. Demorou em %f segundos.\n", segundos);
+        int diferenca = nivel_maior-nivel_menor;
+        vetor[diferenca]++;
+        
+        inicio = clock();
+        buscaRN(&raizRN, 30);
+        fim = clock();
+        segundosRN = (float)(fim - inicio) / CLOCKS_PER_SEC;
+        printf("Busca do elemento 30 na Rubro Negra. Demorou em %f segundos.\n", segundosRN);
+        int diferencaRN = nivel_maiorRN-nivel_menorRN;
+        vetorRN[diferencaRN]++;
+
     }
     for(int i=0; i<1000; i++){
         if( vetor[i] != 0 ){
-            printf("A quantidade de vezes que a diferenca foi %d é %d\n",i,vetor[i]);
+            printf("A quantidade de vezes que a diferenca na AVL foi %d é %d\n",i,vetor[i]);
+        }
+    }
+
+    for(int i=0; i<1000; i++){
+        if( vetorRN[i] != 0 ){
+            printf("A quantidade de vezes que a diferenca na Rubro Negra foi %d é %d\n",i,vetorRN[i]);
         }
     }
     return 0;
