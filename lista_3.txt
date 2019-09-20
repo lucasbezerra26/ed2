@@ -7,5 +7,5 @@ good_evening:boa_noite
 welcome:seja_bem_vindo
 how_are_you:como_vai_voce
 goodbye:tchau
-see_you:are_logo
+see_you:ate_logo
 whats_up:eae
