@@ -183,13 +183,11 @@ typedef struct arvRN{
     struct arvRN* dir;
 }arvRN;
 
-//  arvRN arvRN;
-
 int cor(arvRN* no){
     return (no == NULL) ? 0 : no->vermelha;
 }
 
-arvRN *rotacionaLLRN(arvRN* no){
+arvRN *rotacionaRRRN(arvRN* no){
     arvRN* novo;
     novo = (arvRN*)malloc(sizeof(arvRN));
     novo = no->dir;
@@ -200,7 +198,7 @@ arvRN *rotacionaLLRN(arvRN* no){
     return novo;
 }
 
-arvRN *rotacionaRRRN(arvRN* no){
+arvRN *rotacionaLLRN(arvRN* no){
     arvRN* novo;
     novo = (arvRN*)malloc(sizeof(arvRN));
     novo = no->esq;
@@ -239,10 +237,10 @@ arvRN* inseRN(arvRN* no, int valor){
 
 
     if(cor(no->esq) == 0 && cor(no->dir) == 1)
-        no = rotacionaLLRN(no);
+        no = rotacionaRRRN(no);
 
     if(cor(no->esq) == 1 && cor(no->esq->esq) == 1)
-        no = rotacionaRRRN(no);
+        no = rotacionaLLRN(no);
 
     if(cor(no->esq) == 1 && cor(no->dir) == 1){
         no = troca_cor(no);
