@@ -187,7 +187,7 @@ int cor(arvRN* no){
     return (no == NULL) ? 0 : no->vermelha;
 }
 
-arvRN *rotacionaRRRN(arvRN* no){
+arvRN *rotacionaRN(arvRN* no){
     arvRN* novo;
     novo = (arvRN*)malloc(sizeof(arvRN));
     novo = no->dir;
@@ -198,7 +198,7 @@ arvRN *rotacionaRRRN(arvRN* no){
     return novo;
 }
 
-arvRN *rotacionaLLRN(arvRN* no){
+arvRN *rotacionaRRRN(arvRN* no){
     arvRN* novo;
     novo = (arvRN*)malloc(sizeof(arvRN));
     novo = no->esq;
@@ -237,10 +237,10 @@ arvRN* inseRN(arvRN* no, int valor){
 
 
     if(cor(no->esq) == 0 && cor(no->dir) == 1)
-        no = rotacionaRRRN(no);
+        no = rotacionaRN(no);
 
     if(cor(no->esq) == 1 && cor(no->esq->esq) == 1)
-        no = rotacionaLLRN(no);
+        no = rotacionaRRRN(no);
 
     if(cor(no->esq) == 1 && cor(no->dir) == 1){
         no = troca_cor(no);
@@ -373,12 +373,12 @@ int main(){
         printf("Inserido 1000 elementos na arvore Rubro-Negra em %.4f segundos.\n", segundosRN);
 
         if (segundos > segundosRN){
-            printf("O tempo na AVL foi mais rápido");
+            printf("O tempo na AVL foi maior\n");
         }else{
             if (segundos < segundosRN)
-                printf("O tempo na Rubro Negra foi mais rápido");
+                printf("O tempo na Rubro Negra foi maior\n");
             else
-                printf("O tempo nas duas ávores foram iguais");
+                printf("O tempo nas duas ávores foram iguais\n");
         }
         
         printf("\nArvore AVL\n");
