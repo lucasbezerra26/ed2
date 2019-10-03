@@ -69,42 +69,30 @@ int numeroNos(arvAVL *raiz){
 	return numeroNos(raiz->esq)+1+numeroNos(raiz->dir);
 }
 
-void profundidade_maior(arvAVL **raiz,arvAVL **maior, int *nivel){
-    int numeroNoDir = numeroNos((*raiz)->dir);
-    int numeroNoEsq = numeroNos((*raiz)->esq);
-    if(!((*raiz)->dir == NULL && (*raiz)->esq == NULL)){
-        (*nivel)++;
-        if(numeroNoDir > numeroNoEsq){
-            (*maior) =  (*raiz)->dir;
-            profundidade_maior(&(*raiz)->dir, &(*maior), nivel);
+int profundidade_maior(arvAVL **raiz){
+    if (!(*raiz)){
+        return -1;
+    }else{
+        int numeroNoDir = profundidade_maior(&(*raiz)->dir);
+        int numeroNoEsq = profundidade_maior(&(*raiz)->esq);
+        if ( numeroNoEsq < numeroNoDir ){
+            return numeroNoDir+1;
         }else{
-            (*maior) =  (*raiz)->esq;
-            profundidade_maior(&(*raiz)->esq, &(*maior), nivel);
+            return numeroNoEsq+1;
         }
     }
 }
 
-void profundidade_menor(arvAVL **raiz,arvAVL **menor, int *nivel){
-    int numeroNoDir = numeroNos((*raiz)->dir);
-    int numeroNoEsq = numeroNos((*raiz)->esq);
-    if( ((*raiz)->dir != NULL) && ((*raiz)->esq != NULL) ){
-        (*nivel)++;
-        if(numeroNoDir < numeroNoEsq){
-            (*menor) =  (*raiz)->dir;
-            profundidade_menor(&(*raiz)->dir, &(*menor), nivel);
-        }else{
-            (*menor) =  (*raiz)->esq;
-            profundidade_menor(&(*raiz)->esq, &(*menor), nivel);
-        }
+int profundidade_menor(arvAVL **raiz){
+    if (!(*raiz)){
+        return -1;
     }else{
-        if ((*raiz)->dir == NULL && (*raiz)->esq != NULL){
-            profundidade_menor(&(*raiz)->esq, &(*menor), nivel);
+        int numeroNoDir = profundidade_menor(&(*raiz)->dir);
+        int numeroNoEsq = profundidade_menor(&(*raiz)->esq);
+        if ( numeroNoEsq > numeroNoDir ){
+            return numeroNoDir+1;
         }else{
-            if( (*raiz)->dir != NULL && (*raiz)->esq == NULL ){
-                profundidade_menor(&(*raiz)->dir, &(*menor), nivel);
-            }else{
-                (*menor) = (*raiz);
-            }
+            return numeroNoEsq+1;
         }
     }
 }
@@ -285,42 +273,30 @@ int numeroNosRN(arvRN *raiz){
 	return numeroNosRN(raiz->esq)+1+numeroNosRN(raiz->dir);
 }
 
-void profundidade_maiorRN(arvRN **raiz,arvRN **maior, int *nivel){
-    int numeroNoDir = numeroNosRN((*raiz)->dir);
-    int numeroNoEsq = numeroNosRN((*raiz)->esq);
-    if(!((*raiz)->dir == NULL && (*raiz)->esq == NULL)){
-        (*nivel)++;
-        if(numeroNoDir > numeroNoEsq){
-            (*maior) =  (*raiz)->dir;
-            profundidade_maiorRN(&(*raiz)->dir, &(*maior), nivel);
+int profundidade_maiorRN(arvRN **raiz){
+    if (!(*raiz)){
+        return -1;
+    }else{
+        int numeroNoDir = profundidade_maiorRN(&(*raiz)->dir);
+        int numeroNoEsq = profundidade_maiorRN(&(*raiz)->esq);
+        if ( numeroNoEsq < numeroNoDir ){
+            return numeroNoDir+1;
         }else{
-            (*maior) =  (*raiz)->esq;
-            profundidade_maiorRN(&(*raiz)->esq, &(*maior), nivel);
+            return numeroNoEsq+1;
         }
     }
 }
 
-void profundidade_menorRN(arvRN **raiz,arvRN **menor, int *nivel){
-    int numeroNoDir = numeroNosRN((*raiz)->dir);
-    int numeroNoEsq = numeroNosRN((*raiz)->esq);
-    if( ((*raiz)->dir != NULL) && ((*raiz)->esq != NULL) ){
-        (*nivel)++;
-        if(numeroNoDir < numeroNoEsq){
-            (*menor) =  (*raiz)->dir;
-            profundidade_menorRN(&(*raiz)->dir, &(*menor), nivel);
-        }else{
-            (*menor) =  (*raiz)->esq;
-            profundidade_menorRN(&(*raiz)->esq, &(*menor), nivel);
-        }
+int profundidade_menorRN(arvRN **raiz){
+    if (!(*raiz)){
+        return -1;
     }else{
-        if ((*raiz)->dir == NULL && (*raiz)->esq != NULL){
-            profundidade_menorRN(&(*raiz)->esq, &(*menor), nivel);
+        int numeroNoDir = profundidade_menorRN(&(*raiz)->dir);
+        int numeroNoEsq = profundidade_menorRN(&(*raiz)->esq);
+        if ( numeroNoEsq > numeroNoDir ){
+            return numeroNoDir+1;
         }else{
-            if( (*raiz)->dir != NULL && (*raiz)->esq == NULL ){
-                profundidade_menorRN(&(*raiz)->dir, &(*menor), nivel);
-            }else{
-                (*menor) = (*raiz);
-            }
+            return numeroNoEsq+1;
         }
     }
 }
@@ -388,13 +364,13 @@ int main(){
         imprimirRN(&raizRN);
         printf("\n");
 
-        profundidade_maior(&raizAvl, &maior, &nivel_maior);
-        profundidade_menor(&raizAvl, &aux, &nivel_menor);
+        nivel_maior = profundidade_maior(&raizAvl);
+        nivel_menor = profundidade_menor(&raizAvl);
         printf("Maior Nível da AVL: %d\n", nivel_maior);
         printf("Menor Nível da AVl: %d\n", nivel_menor);
 
-        profundidade_maiorRN(&raizRN, &maiorRN, &nivel_maiorRN);
-        profundidade_menorRN(&raizRN, &auxRN, &nivel_menorRN);
+        nivel_maiorRN = profundidade_maiorRN(&raizRN);
+        nivel_menorRN = profundidade_menorRN(&raizRN);
         printf("Maior Nível da RN: %d\n", nivel_maiorRN);
         printf("Menor Nível da RN: %d\n", nivel_menorRN);
 
